@@ -11,6 +11,8 @@ create table if not exists public.records (
 create index if not exists records_kind_idx on public.records (kind);
 
 -- Alleen ingelogde gebruikers (jij en Isabel) mogen lezen en schrijven.
+revoke all on public.records from anon;
+grant select, insert, update, delete on public.records to authenticated;
 alter table public.records enable row level security;
 
 drop policy if exists "huishouden leest" on public.records;

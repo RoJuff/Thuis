@@ -83,6 +83,11 @@ export class Store {
     return data.user;
   }
 
+  async changePassword(password) {
+    const { error } = await this.sb.auth.updateUser({ password });
+    if (error) throw error;
+  }
+
   async signOut() {
     if (this.cloud) await this.sb.auth.signOut();
     this.user = null;

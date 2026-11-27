@@ -154,6 +154,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .card p { margin: 6px 0; }
 .card > label:not(.switch) { display: block; margin-bottom: 12px; color: var(--muted); font-size: 14px; }
 .card .switch { display: flex; margin: 4px 0 14px; }
+.buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
 .stack { display: flex; flex-direction: column; gap: 10px; }
 .stack label, .fields label { display: flex; flex-direction: column; gap: 5px; color: var(--muted); font-size: 14px; }
 .stack input, .fields input, .fields select, .fields textarea, .card select {
