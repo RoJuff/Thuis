@@ -411,6 +411,28 @@ const ChoreView = {
 // Meer / instellingen
 // =====================================================================
 
+function changePassword() {
+  sheet({
+    title: 'Wachtwoord wijzigen',
+    saveLabel: 'Wijzig',
+    body: `<label>Nieuw wachtwoord<input type="password" name="pw" minlength="8" required autocomplete="new-password"></label>
+      <label>Herhaal nieuw wachtwoord<input type="password" name="pw2" minlength="8" required autocomplete="new-password"></label>
+      <p class="hint">Minimaal 8 tekens.</p>
+      <p class="hint error" data-pwerror hidden></p>`,
+    onSave: (v, form) => {
+      const err = form.querySelector('[data-pwerror]');
+      const fail = (m) => { err.textContent = m; err.hidden = false; };
+      if (v.pw !== v.pw2) { fail('De wachtwoorden zijn niet gelijk.'); return false; }
+      const btn = form.querySelector('button[type=submit]');
+      btn.disabled = true;
+      store.changePassword(v.pw)
+        .then(() => { form.closest('dialog').close(); form.closest('dialog').remove(); toast('Wachtwoord gewijzigd'); })
+        .catch((ex) => { btn.disabled = false; fail(/different|same/i.test(ex.message) ? 'Kies een ander wachtwoord dan het huidige.' : `Wijzigen mislukt: ${ex.message}`); });
+      return false;
+    },
+  });
+}
+
 const MoreView = {
   title: 'Meer', icon: icons.more,
   mount(el) {
@@ -437,6 +459,7 @@ const MoreView = {
     el.addEventListener('click', async (e) => {
       if (e.target.closest('[data-wall]')) go('muur');
       if (e.target.closest('[data-logout]')) { await store.signOut(); boot(); }
+      if (e.target.closest('[data-password]')) changePassword();
     });
   },
   update(el) {
@@ -460,7 +483,8 @@ const MoreView = {
       <section class="card">
         <h3>Synchronisatie</h3>
         <p><span class="dot ${store.status}"></span> ${esc(statusText)}</p>
-        ${store.user ? `<p class="hint">Ingelogd als ${esc(store.user.email)}</p><button class="pill ghost" data-logout>Uitloggen</button>` : ''}
+        ${store.user ? `<p class="hint">Ingelogd als ${esc(store.user.email)}</p><div class="buttons"><button class="pill" data-password>Wachtwoord wijzigen</button>
+          <button class="pill ghost" data-logout>Uitloggen</button></div>` : ''}
       </section>
       <section class="card">
         <h3>Op je beginscherm zetten</h3>
